@@ -23,6 +23,8 @@ Prompts:
 
 Explain your scoring approach in simple language.  
 
+For each song, the recommender starts at zero points, adds 2 points if its genre matches the user's favorite genre, and adds 1 point if its mood matches the user's favorite mood. It also adds up to 1 point for energy closeness: a song gets the full point when its energy matches the user's target exactly, and loses points as the difference grows. The system calculates a score for every song, sorts them from highest to lowest, and returns the top results along with the reasons for each score.
+
 Prompts:  
 
 - What features of each song are used (genre, energy, mood, etc.)  
