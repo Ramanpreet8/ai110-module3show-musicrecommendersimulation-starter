@@ -10,7 +10,7 @@ The catalog contains 18 songs, including pop, lofi, rock, jazz, ambient, synthwa
 
 ## 3. Algorithm Summary
 
-An exact genre match adds 1 point, and an exact mood match adds 1 point. Energy similarity adds up to 2 points: `2 * (1 - abs(song energy - target energy))`. Popularity closeness adds up to 0.5, a matching release decade adds 0.5, each shared mood tag adds 0.5 up to 1.0, and instrumentalness closeness adds up to 0.3. The program adds these points, sorts songs from highest score to lowest, and returns the top five with reasons.
+Choose one of three modes: genre-first weights genre/mood/energy at 3/1/1, mood-first at 1/3/1, and energy-focused at 0.5/0.5/3. An exact genre or mood match earns that mode's weight; energy similarity is `1 - abs(song energy - target energy)` times its weight. Popularity closeness adds up to 0.5, a matching release decade adds 0.5, each shared mood tag adds 0.5 up to 1.0, and instrumentalness closeness adds up to 0.3. The program adds the points, sorts songs from highest score to lowest, and returns the top five with reasons.
 
 ## 4. Observed Behavior and Biases
 
@@ -20,7 +20,7 @@ Changing the weights and adding features changed the rankings, but there are no 
 
 I ran the CLI for three ordinary profiles and two conflicting profiles. I checked the top-five rankings, score explanations, feature ranges, and score arithmetic. In the expanded run, High-Energy Pop's Sunrise City score is 6.00, equal to the displayed reason points: 1.00 genre, 1.00 mood, 1.74 energy, 0.48 popularity, 0.50 decade, 1.00 mood tags, and 0.28 instrumentalness. Low-Energy Intense Rock now puts Quiet Constellations first, reflecting its low energy, popularity, decade, tags, and instrumentalness matches. There are no listener ratings to prove these results are accurate.
 
-The terminal transcript and comparisons below preserve the earlier Phase 4 baseline run, before the advanced features were added. The current High-Energy Pop transcript is in the README.
+The terminal transcript and comparisons below preserve the earlier Phase 4 baseline run, before advanced features and scoring modes were added. Current mode comparisons are in the README.
 
 ```text
 Loaded songs: 18

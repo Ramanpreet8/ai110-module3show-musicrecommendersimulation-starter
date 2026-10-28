@@ -28,6 +28,68 @@
 
 ---
 
+## Challenge 2: Multiple Scoring Modes
+
+### Design pattern chosen
+
+I used a Strategy-style design with a dictionary of named weight configurations. The `genre_first`, `mood_first`, and `energy_focused` configurations hold the genre, mood, and energy weights. `score_song` applies the selected configuration, and `recommend_songs` passes the mode through while ranking. This keeps the scoring implementation in one place and makes a new mode a configuration entry.
+
+### Alternatives considered
+
+- Separate scoring functions would keep each strategy distinct, but repeat the shared feature scoring and explanation logic.
+- An `if`/`else` branch for every mode is straightforward for three choices, but grows into repeated conditionals as more modes are added.
+- A weight-config dictionary was the smallest modular approach for this project; separate strategy classes could be considered if modes later require substantially different logic.
+
+### How AI contributed to the brainstorm
+
+The AI compared configuration dictionaries, separate scoring functions, and conditional branching, including the trade-off between simplicity and extensibility. It recommended keeping the scoring algorithm shared and moving only the weights into named configurations. I used that recommendation to implement the modes and add a CLI switch.
+
+### Verification results
+
+Ran `python3 -m src.main --mode all` and compared the High-Energy Pop profile in all three modes. Sunrise City stayed first, while mood-first moved Rooftop Lights above Gym Hero; energy-focused raised energy similarity contributions and changed the scores. The mode weights and score sums were checked directly, and `python3 -m src.main --mode mood_first` confirmed the CLI switch.
+
+```text
+High-Energy Pop - Mode: genre_first
+1. Sunrise City - Score: 7.13
+   Reasons: genre match (+3.0), mood match (+1.0), energy similarity (+0.87), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+1.00), instrumentalness close (+0.28)
+2. Gym Hero - Score: 5.23
+   Reasons: genre match (+3.0), energy similarity (+0.98), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
+3. Rooftop Lights - Score: 3.56
+   Reasons: mood match (+1.0), energy similarity (+0.81), popularity close (+0.46), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
+4. Neon Parade - Score: 2.57
+   Reasons: energy similarity (+0.86), popularity close (+0.43), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
+5. Iron Horizon - Score: 2.18
+   Reasons: energy similarity (+0.99), popularity close (+0.42), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
+
+High-Energy Pop - Mode: mood_first
+1. Sunrise City - Score: 7.13
+   Reasons: genre match (+1.0), mood match (+3.0), energy similarity (+0.87), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+1.00), instrumentalness close (+0.28)
+2. Rooftop Lights - Score: 5.56
+   Reasons: mood match (+3.0), energy similarity (+0.81), popularity close (+0.46), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
+3. Gym Hero - Score: 3.23
+   Reasons: genre match (+1.0), energy similarity (+0.98), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
+4. Neon Parade - Score: 2.57
+   Reasons: energy similarity (+0.86), popularity close (+0.43), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
+5. Iron Horizon - Score: 2.18
+   Reasons: energy similarity (+0.99), popularity close (+0.42), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
+
+High-Energy Pop - Mode: energy_focused
+1. Sunrise City - Score: 5.87
+   Reasons: genre match (+0.5), mood match (+0.5), energy similarity (+2.61), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+1.00), instrumentalness close (+0.28)
+2. Gym Hero - Score: 4.70
+   Reasons: genre match (+0.5), energy similarity (+2.94), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
+3. Rooftop Lights - Score: 4.68
+   Reasons: mood match (+0.5), energy similarity (+2.43), popularity close (+0.46), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
+4. Neon Parade - Score: 4.29
+   Reasons: energy similarity (+2.58), popularity close (+0.43), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
+5. Iron Horizon - Score: 4.16
+   Reasons: energy similarity (+2.97), popularity close (+0.42), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
+```
+
+### Manual Verification Notes
+
+<!-- Add any additional manual checks or issues you noticed. -->
+
 > **Stretch features only.** Only fill in the sections that apply to stretch features you attempted. If you did not attempt a stretch feature, leave its section blank or delete it. This file is not required for the core project.
 
 ---
