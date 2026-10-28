@@ -21,7 +21,7 @@ Real music platforms often combine collaborative filtering, which learns from li
 
 ### Algorithm Recipe
 
-For each song, add 2 points when its genre matches the user's favorite genre and 1 point when its mood matches the user's favorite mood. Add up to 1 energy-similarity point using `1 - abs(song.energy - user.target_energy)`; since both energy values are on a 0-to-1 scale, this gives the full point for an exact match and fewer points as the difference grows. Rank songs from highest total score to lowest, and recommend the top results. This favors genre matches over mood matches, so it may over-prioritize a user's favorite genre and under-recommend songs from other genres; the small catalog and manually assigned mood labels can also limit variety and accuracy.
+For each song, add 1 point when its genre matches the user's favorite genre and 1 point when its mood matches the user's favorite mood. Add energy-similarity points using `2 * (1 - abs(song.energy - user.target_energy))`; with both energy values on a 0-to-1 scale, this adds up to 2 points for an exact match and decreases as the difference grows. Rank songs from highest total score to lowest, and recommend the top results. Energy now has more influence than either categorical match, so the system may over-prioritize similar energy levels; the small catalog and manually assigned mood labels can also limit variety and accuracy.
 
 ---
 
@@ -63,20 +63,22 @@ You can add more tests in `tests/test_recommender.py`.
 ## Sample Recommendation Output
 
 ```
+```text
 Loaded songs: 18
 
-Top recommendations
-===================
-1. Sunrise City - Score: 3.98
-   Reasons: genre match (+2.0), mood match (+1.0), energy similarity (+0.98)
-2. Gym Hero - Score: 2.87
-   Reasons: genre match (+2.0), energy similarity (+0.87)
-3. Rooftop Lights - Score: 1.96
-   Reasons: mood match (+1.0), energy similarity (+0.96)
-4. Neon Parade - Score: 0.99
-   Reasons: energy similarity (+0.99)
-5. Sidewalk Cypher - Score: 0.98
-   Reasons: energy similarity (+0.98)
+High-Energy Pop
+---------------
+1. Sunrise City - Score: 3.74
+   Reasons: genre match (+1.0), mood match (+1.0), energy similarity (+1.74)
+2. Gym Hero - Score: 2.96
+   Reasons: genre match (+1.0), energy similarity (+1.96)
+3. Rooftop Lights - Score: 2.62
+   Reasons: mood match (+1.0), energy similarity (+1.62)
+4. Iron Horizon - Score: 1.98
+   Reasons: energy similarity (+1.98)
+5. Storm Runner - Score: 1.92
+   Reasons: energy similarity (+1.92)
+```
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
