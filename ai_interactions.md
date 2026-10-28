@@ -90,6 +90,24 @@ High-Energy Pop - Mode: energy_focused
 
 <!-- Add any additional manual checks or issues you noticed. -->
 
+---
+
+## Challenge 3: Diversity Penalty
+
+### Prompt used
+
+> Implement the diversity penalty in `recommend_songs`: pick songs one at a time, always taking the highest adjusted score, and after each pick apply a penalty to remaining songs with the same artist (-1.0) or same genre (-0.5). Add a parameter `diversity=True` (default True) so I can turn it off to compare. Add a reason like "diversity penalty: artist already recommended (-1.0)" when applied. Add a test profile in main.py that would normally return several songs by the same artist or genre, and show its top five with diversity ON vs OFF.
+
+### Greedy re-ranking approach
+
+The recommender scores every song with the selected scoring mode, then repeatedly recalculates each remaining song's adjusted score against the artists and genres already selected. It picks the highest adjusted score, records the applied penalties in the reasons, and updates the selected artist and genre counts. With diversity disabled, it returns the original score-sorted results without penalties.
+
+### Manual Verification Notes
+
+For the Low-Energy Ambient Diversity Stress Test, diversity OFF returned Midnight Coding and Focus Flow by the same artist, LoRoom, and included three lofi tracks. With diversity ON, Focus Flow was replaced by Night Drive Loop; the list gained one unique artist and one unique genre. Library Rain's adjusted score includes the visible `diversity penalty: genre already recommended (-0.5)` reason. The OFF ranking keeps unadjusted scores, and ON scores match base scores minus listed penalties within the two-decimal display rounding.
+
+<!-- Add any other manual checks or issues you would like to record. -->
+
 > **Stretch features only.** Only fill in the sections that apply to stretch features you attempted. If you did not attempt a stretch feature, leave its section blank or delete it. This file is not required for the core project.
 
 ---

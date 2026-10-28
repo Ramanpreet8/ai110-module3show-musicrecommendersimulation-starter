@@ -14,7 +14,7 @@ Choose one of three modes: genre-first weights genre/mood/energy at 3/1/1, mood-
 
 ## 4. Observed Behavior and Biases
 
-Changing the weights and adding features changed the rankings, but there are no listener ratings to show that the new rankings are more accurate. Energy has twice the maximum influence of a genre or mood match, and mood-tag overlap can add another point. Exact labels do not recognize related genres or moods, and the catalog has only a few examples for most labels. If a requested mood or genre is missing, recommendations rely more heavily on numerical similarities. Explicit status is not scored; tempo, valence, danceability, acousticness, listening history, and context are also ignored.
+Changing the weights, adding features, and applying diversity penalties changed the rankings, but there are no listener ratings to show that the new rankings are more accurate. Energy has twice the maximum influence of a genre or mood match, and mood-tag overlap can add another point. Repeat-artist and repeat-genre penalties can push out a song that otherwise scored well, so they trade relevance for variety. Exact labels do not recognize related genres or moods, and the catalog has only a few examples for most labels. If a requested mood or genre is missing, recommendations rely more heavily on numerical similarities. Explicit status is not scored; tempo, valence, danceability, acousticness, listening history, and context are also ignored.
 
 ## 5. Evaluation Process
 

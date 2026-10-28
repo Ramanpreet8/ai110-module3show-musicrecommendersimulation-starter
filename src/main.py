@@ -72,6 +72,34 @@ def main() -> None:
                 print(f"{rank}. {song['title']} - Score: {score:.2f}")
                 print(f"   Reasons: {', '.join(reasons)}")
 
+    diversity_profile = {
+        "genre": "ambient",
+        "mood": "chill",
+        "energy": 0.10,
+        "target_popularity": 50,
+        "preferred_decade": 2020,
+        "preferred_mood_tags": [],
+        "target_instrumentalness": 0.50,
+    }
+    mode = "genre_first" if args.mode == "all" else args.mode
+    profile_name = "Low-Energy Ambient Diversity Stress Test"
+    heading = f"Diversity comparison: {profile_name} - Mode: {mode}"
+    print(f"\n{heading}")
+    print("=" * len(heading))
+    for diversity in (False, True):
+        state = "OFF" if not diversity else "ON"
+        recommendations = recommend_songs(
+            diversity_profile,
+            songs,
+            k=5,
+            mode=mode,
+            diversity=diversity,
+        )
+        print(f"\nDiversity {state}")
+        for rank, (song, score, reasons) in enumerate(recommendations, start=1):
+            print(f"{rank}. {song['title']} - Score: {score:.2f}")
+            print(f"   Reasons: {', '.join(reasons)}")
+
 
 if __name__ == "__main__":
     main()

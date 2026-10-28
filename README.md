@@ -21,7 +21,7 @@ Real music platforms often combine collaborative filtering, which learns from li
 
 ### Algorithm Recipe
 
-Choose `genre_first`, `mood_first`, or `energy_focused` with `python -m src.main --mode <mode>`; the default `all` compares each mode. The modes weight genre, mood, and energy similarity as `(3, 1, 1)`, `(1, 3, 1)`, and `(0.5, 0.5, 3)`. Add up to 0.5 popularity points using `0.5 * (1 - abs(song.popularity - target_popularity) / 100)`, 0.5 for an exact release-decade match, 0.5 per overlapping mood tag up to 1.0, and up to 0.3 for instrumentalness closeness using `0.3 * (1 - abs(song.instrumentalness - target_instrumentalness))`. Rank songs from highest total score to lowest. These weights can favor particular features, while the small catalog and manually assigned labels limit variety and accuracy.
+Choose `genre_first`, `mood_first`, or `energy_focused` with `python -m src.main --mode <mode>`; the default `all` compares each mode. The modes weight genre, mood, and energy similarity as `(3, 1, 1)`, `(1, 3, 1)`, and `(0.5, 0.5, 3)`. Add up to 0.5 popularity points using `0.5 * (1 - abs(song.popularity - target_popularity) / 100)`, 0.5 for an exact release-decade match, 0.5 per overlapping mood tag up to 1.0, and up to 0.3 for instrumentalness closeness using `0.3 * (1 - abs(song.instrumentalness - target_instrumentalness))`. Recommendations are selected greedily: each repeat artist loses 1 point and each repeat genre loses 0.5, based on songs already chosen. Set `diversity=False` in `recommend_songs` to compare the unadjusted ranking. These weights and penalties can favor particular features, while the small catalog and manually assigned labels limit variety and accuracy.
 
 ---
 
@@ -103,6 +103,24 @@ High-Energy Pop - Mode: energy_focused
    Reasons: energy similarity (+2.58), popularity close (+0.43), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
 5. Iron Horizon - Score: 4.16
    Reasons: energy similarity (+2.97), popularity close (+0.42), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
+
+Diversity comparison: Low-Energy Ambient Diversity Stress Test - Mode: genre_first
+==================================================================================
+
+Diversity OFF
+1. Spacewalk Thoughts - Score: 5.93
+2. Midnight Coding - Score: 2.81
+3. Library Rain - Score: 2.42
+4. Focus Flow - Score: 1.86
+5. Quiet Constellations - Score: 1.51
+
+Diversity ON
+1. Spacewalk Thoughts - Score: 5.93
+2. Midnight Coding - Score: 2.81
+3. Library Rain - Score: 1.92
+   Reasons: mood match (+1.0), energy similarity (+0.75), popularity close (+0.48), release decade match (+0.00), mood tags overlap (+0.00), instrumentalness close (+0.18), diversity penalty: genre already recommended (-0.5)
+4. Quiet Constellations - Score: 1.51
+5. Night Drive Loop - Score: 1.42
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 

@@ -169,13 +169,55 @@ def recommend_songs(
     songs: List[Dict],
     k: int = 5,
     mode: str = "genre_first",
+    diversity: bool = True,
 ) -> List[Tuple[Dict, float, List[str]]]:
-    """Return the top songs with scores using the selected scoring mode."""
+    """Return top songs using the selected scoring mode and diversity rule."""
     if k < 0:
         raise ValueError("k must be non-negative")
 
-    scored_songs = [
+    remaining = [
         (song, *score_song(user_prefs, song, mode))
         for song in songs
     ]
-    return sorted(scored_songs, key=lambda recommendation: recommendation[1], reverse=True)[:k]
+    if not diversity:
+        return sorted(
+            remaining,
+            key=lambda recommendation: recommendation[1],
+            reverse=True,
+        )[:k]
+
+    selected: List[Tuple[Dict, float, List[str]]] = []
+    artist_counts: Dict[str, int] = {}
+    genre_counts: Dict[str, int] = {}
+
+    while remaining and len(selected) < k:
+        best_index = 0
+        best_recommendation = None
+
+        for index, (song, base_score, base_reasons) in enumerate(remaining):
+            artist_penalty = artist_counts.get(song["artist"], 0)
+            genre_penalty = genre_counts.get(song["genre"], 0) * 0.5
+            adjusted_score = base_score - artist_penalty - genre_penalty
+            reasons = base_reasons.copy()
+            reasons.extend(
+                ["diversity penalty: artist already recommended (-1.0)"]
+                * artist_counts.get(song["artist"], 0)
+            )
+            reasons.extend(
+                ["diversity penalty: genre already recommended (-0.5)"]
+                * genre_counts.get(song["genre"], 0)
+            )
+            recommendation = (song, adjusted_score, reasons)
+
+            if best_recommendation is None or adjusted_score > best_recommendation[1]:
+                best_index = index
+                best_recommendation = recommendation
+
+        if best_recommendation is None:
+            raise RuntimeError("Unable to select a recommendation from remaining songs")
+        selected.append(best_recommendation)
+        song = remaining.pop(best_index)[0]
+        artist_counts[song["artist"]] = artist_counts.get(song["artist"], 0) + 1
+        genre_counts[song["genre"]] = genre_counts.get(song["genre"], 0) + 1
+
+    return selected
