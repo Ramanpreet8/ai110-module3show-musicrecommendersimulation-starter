@@ -17,11 +17,31 @@ def main() -> None:
     print(f"Loaded songs: {len(songs)}")
 
     profiles = [
-        ("High-Energy Pop", {"genre": "pop", "mood": "happy", "energy": 0.95}),
-        ("Chill Lofi", {"genre": "lofi", "mood": "chill", "energy": 0.40}),
-        ("Deep Intense Rock", {"genre": "rock", "mood": "intense", "energy": 0.90}),
-        ("Sad High-Energy Pop", {"genre": "pop", "mood": "sad", "energy": 0.90}),
-        ("Low-Energy Intense Rock", {"genre": "rock", "mood": "intense", "energy": 0.10}),
+        ("High-Energy Pop", {
+            "genre": "pop", "mood": "happy", "energy": 0.95,
+            "target_popularity": 85, "preferred_decade": 2020,
+            "preferred_mood_tags": ["euphoric", "uplifting"], "target_instrumentalness": 0.10,
+        }),
+        ("Chill Lofi", {
+            "genre": "lofi", "mood": "chill", "energy": 0.40,
+            "target_popularity": 60, "preferred_decade": 2020,
+            "preferred_mood_tags": ["dreamy", "calm", "focused"], "target_instrumentalness": 0.80,
+        }),
+        ("Deep Intense Rock", {
+            "genre": "rock", "mood": "intense", "energy": 0.90,
+            "target_popularity": 75, "preferred_decade": 2010,
+            "preferred_mood_tags": ["aggressive", "intense", "driving"], "target_instrumentalness": 0.05,
+        }),
+        ("Sad High-Energy Pop", {
+            "genre": "pop", "mood": "sad", "energy": 0.90,
+            "target_popularity": 80, "preferred_decade": 2020,
+            "preferred_mood_tags": ["wistful", "melancholic"], "target_instrumentalness": 0.10,
+        }),
+        ("Low-Energy Intense Rock", {
+            "genre": "rock", "mood": "intense", "energy": 0.10,
+            "target_popularity": 45, "preferred_decade": 2010,
+            "preferred_mood_tags": ["reflective", "dark"], "target_instrumentalness": 0.65,
+        }),
     ]
 
     for profile_name, user_prefs in profiles:

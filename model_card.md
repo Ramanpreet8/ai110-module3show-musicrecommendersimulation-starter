@@ -2,23 +2,25 @@
 
 ## 1. Goal and Task
 
-Vibe Finder recommends songs from a small catalog. It ranks songs using a user's favorite genre, favorite mood, and target energy. This is a classroom simulation, not a production music service.
+Vibe Finder recommends songs from a small catalog. It ranks songs using a user's favorite genre and mood, target energy, popularity, preferred release decade, preferred mood tags, and target instrumentalness. This is a classroom simulation, not a production music service.
 
 ## 2. Data Used
 
-The catalog contains 18 songs, including pop, lofi, rock, jazz, ambient, synthwave, country, metal, classical, hip-hop, reggae, blues, folk, and funk. Each row has a genre, mood, energy, tempo, valence, danceability, and acousticness, along with song and artist names. The current score uses only genre, mood, and energy. These sample records do not represent the full range of music or listeners.
+The catalog contains 18 songs, including pop, lofi, rock, jazz, ambient, synthwave, country, metal, classical, hip-hop, reggae, blues, folk, and funk. Each row also includes popularity, release decade, 2–3 mood tags, explicit status, and instrumentalness, alongside the original song, artist, and musical attributes. The score uses genre, mood, energy, popularity, decade, mood tags, and instrumentalness; explicit status is loaded but not scored. These sample records do not represent the full range of music or listeners.
 
 ## 3. Algorithm Summary
 
-An exact genre match adds 1 point, and an exact mood match adds 1 point. Energy similarity adds up to 2 points: `2 * (1 - abs(song energy - target energy))`. The program adds these points, sorts songs from highest score to lowest, and returns the top five with reasons.
+An exact genre match adds 1 point, and an exact mood match adds 1 point. Energy similarity adds up to 2 points: `2 * (1 - abs(song energy - target energy))`. Popularity closeness adds up to 0.5, a matching release decade adds 0.5, each shared mood tag adds 0.5 up to 1.0, and instrumentalness closeness adds up to 0.3. The program adds these points, sorts songs from highest score to lowest, and returns the top five with reasons.
 
 ## 4. Observed Behavior and Biases
 
-Changing the weights changed the rankings, but there are no listener ratings to show that the new rankings are more accurate. Energy now has twice the maximum influence of a genre or mood match, so songs with similar energy can outrank songs that better match a user's style. Exact labels do not recognize related genres or moods, and the catalog has only a few examples for most labels. If a requested mood or genre is missing, recommendations rely more heavily on energy. The system also ignores tempo, valence, danceability, acousticness, listening history, and context.
+Changing the weights and adding features changed the rankings, but there are no listener ratings to show that the new rankings are more accurate. Energy has twice the maximum influence of a genre or mood match, and mood-tag overlap can add another point. Exact labels do not recognize related genres or moods, and the catalog has only a few examples for most labels. If a requested mood or genre is missing, recommendations rely more heavily on numerical similarities. Explicit status is not scored; tempo, valence, danceability, acousticness, listening history, and context are also ignored.
 
 ## 5. Evaluation Process
 
-I ran the CLI for three ordinary profiles and two conflicting profiles. I checked the top-five rankings, score explanations, and edge cases. For Deep Intense Rock, Storm Runner ranks first with 3.98 points: 1 point for rock, 1 for intense, and 1.98 for energy similarity (`2 * (1 - abs(0.91 - 0.90))`). Low-Energy Intense Rock still puts Storm Runner first because its genre and mood bonuses outweigh its low energy similarity. Sad High-Energy Pop has no matching sad song, so the results favor pop songs and similar energy instead.
+I ran the CLI for three ordinary profiles and two conflicting profiles. I checked the top-five rankings, score explanations, feature ranges, and score arithmetic. In the expanded run, High-Energy Pop's Sunrise City score is 6.00, equal to the displayed reason points: 1.00 genre, 1.00 mood, 1.74 energy, 0.48 popularity, 0.50 decade, 1.00 mood tags, and 0.28 instrumentalness. Low-Energy Intense Rock now puts Quiet Constellations first, reflecting its low energy, popularity, decade, tags, and instrumentalness matches. There are no listener ratings to prove these results are accurate.
+
+The terminal transcript and comparisons below preserve the earlier Phase 4 baseline run, before the advanced features were added. The current High-Energy Pop transcript is in the README.
 
 ```text
 Loaded songs: 18
@@ -112,4 +114,4 @@ Add more songs and more balanced examples for each genre and mood. Use tempo, va
 
 ## 8. Personal Reflection
 
-My biggest learning moment was seeing that the weights directly shape the recommendations: doubling energy similarity changed the ranking, but did not prove the results were better. I had to double-check the AI's suggested score by calculating the genre, mood, and energy points for Storm Runner by hand. I was surprised that Storm Runner still ranked first for a low-energy rock user because its genre and mood bonuses outweighed its energy mismatch. Next, I would add more songs, use more of their attributes, and test the results with real listener feedback.
+My biggest learning moment was seeing how every scoring weight and feature changes the order of the recommendations, without proving they are more accurate. I double-checked the AI's work by adding Sunrise City's listed points by hand and caught a loader bug when instrumentalness was treated as text instead of a number. I was surprised that the expanded features moved Quiet Constellations above Storm Runner for the low-energy rock profile. Next, I would add more songs and test recommendations with real listener feedback.

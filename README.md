@@ -17,11 +17,11 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Real music platforms often combine collaborative filtering, which learns from listening patterns, likes, skips, and playlists from similar users, with content-based filtering, which compares a listener's preferences with song attributes. This project prioritizes a simple, explainable content-based approach: each `Song` has a genre, mood, energy, tempo, valence, danceability, and acousticness, while a `UserProfile` stores a favorite genre and mood, a target energy, and whether the user likes acoustic music. The recommender is designed to score each song for how well it matches those preferences—including rewarding energy values close to the user's target—and then rank songs by score to choose recommendations.
+Real music platforms often combine collaborative filtering, which learns from listening patterns, likes, skips, and playlists from similar users, with content-based filtering, which compares a listener's preferences with song attributes. This project prioritizes a simple, explainable content-based approach: each `Song` also records popularity, release decade, detailed mood tags, explicit status, and instrumentalness, while each `UserProfile` can set targets for these features. The recommender scores genre, mood, energy, and these added attributes, then ranks songs by total score.
 
 ### Algorithm Recipe
 
-For each song, add 1 point when its genre matches the user's favorite genre and 1 point when its mood matches the user's favorite mood. Add energy-similarity points using `2 * (1 - abs(song.energy - user.target_energy))`; with both energy values on a 0-to-1 scale, this adds up to 2 points for an exact match and decreases as the difference grows. Rank songs from highest total score to lowest, and recommend the top results. Energy now has more influence than either categorical match, so the system may over-prioritize similar energy levels; the small catalog and manually assigned mood labels can also limit variety and accuracy.
+For each song, add 1 point for an exact genre match and 1 for an exact mood match. Add up to 2 energy points using `2 * (1 - abs(song.energy - user.target_energy))`. Add up to 0.5 popularity points using `0.5 * (1 - abs(song.popularity - target_popularity) / 100)`, 0.5 for an exact release-decade match, 0.5 per overlapping mood tag up to 1.0, and up to 0.3 for instrumentalness closeness using `0.3 * (1 - abs(song.instrumentalness - target_instrumentalness))`. Rank songs from highest total score to lowest. Scores can favor energy and overlapping tags; the small catalog and manually assigned labels limit variety and accuracy.
 
 ---
 
@@ -62,24 +62,21 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Sample Recommendation Output
 
-```
 ```text
 Loaded songs: 18
 
 High-Energy Pop
 ---------------
-1. Sunrise City - Score: 3.74
-   Reasons: genre match (+1.0), mood match (+1.0), energy similarity (+1.74)
-2. Gym Hero - Score: 2.96
-   Reasons: genre match (+1.0), energy similarity (+1.96)
-3. Rooftop Lights - Score: 2.62
-   Reasons: mood match (+1.0), energy similarity (+1.62)
-4. Iron Horizon - Score: 1.98
-   Reasons: energy similarity (+1.98)
-5. Storm Runner - Score: 1.92
-   Reasons: energy similarity (+1.92)
-```
-```
+1. Sunrise City - Score: 6.00
+   Reasons: genre match (+1.0), mood match (+1.0), energy similarity (+1.74), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+1.00), instrumentalness close (+0.28)
+2. Rooftop Lights - Score: 4.37
+   Reasons: mood match (+1.0), energy similarity (+1.62), popularity close (+0.46), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
+3. Gym Hero - Score: 4.21
+   Reasons: genre match (+1.0), energy similarity (+1.96), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
+4. Neon Parade - Score: 3.43
+   Reasons: energy similarity (+1.72), popularity close (+0.43), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
+5. Iron Horizon - Score: 3.17
+   Reasons: energy similarity (+1.98), popularity close (+0.42), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 
