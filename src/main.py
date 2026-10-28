@@ -9,10 +9,22 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
+import argparse
+
 from .recommender import load_songs, recommend_songs
 
 
 def main() -> None:
+    """Run recommendations for the available profiles and scoring modes."""
+    parser = argparse.ArgumentParser(description="Run the music recommender simulation.")
+    parser.add_argument(
+        "--mode",
+        choices=["all", "genre_first", "mood_first", "energy_focused"],
+        default="all",
+        help="Scoring strategy to use (default: compare all strategies).",
+    )
+    args = parser.parse_args()
+
     songs = load_songs("data/songs.csv")
     print(f"Loaded songs: {len(songs)}")
 
@@ -44,14 +56,21 @@ def main() -> None:
         }),
     ]
 
+    modes = (
+        ["genre_first", "mood_first", "energy_focused"]
+        if args.mode == "all"
+        else [args.mode]
+    )
     for profile_name, user_prefs in profiles:
-        recommendations = recommend_songs(user_prefs, songs, k=5)
+        for mode in modes:
+            recommendations = recommend_songs(user_prefs, songs, k=5, mode=mode)
 
-        print(f"\n{profile_name}")
-        print("-" * len(profile_name))
-        for rank, (song, score, reasons) in enumerate(recommendations, start=1):
-            print(f"{rank}. {song['title']} - Score: {score:.2f}")
-            print(f"   Reasons: {', '.join(reasons)}")
+            heading = f"{profile_name} - Mode: {mode}"
+            print(f"\n{heading}")
+            print("-" * len(heading))
+            for rank, (song, score, reasons) in enumerate(recommendations, start=1):
+                print(f"{rank}. {song['title']} - Score: {score:.2f}")
+                print(f"   Reasons: {', '.join(reasons)}")
 
 
 if __name__ == "__main__":

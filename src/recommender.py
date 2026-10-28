@@ -2,6 +2,13 @@ import csv
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 
+SCORING_MODES: Dict[str, Dict[str, float]] = {
+    "genre_first": {"genre": 3.0, "mood": 1.0, "energy": 1.0},
+    "mood_first": {"genre": 1.0, "mood": 3.0, "energy": 1.0},
+    "energy_focused": {"genre": 0.5, "mood": 0.5, "energy": 3.0},
+}
+
+
 @dataclass
 class Song:
     """Represent a song and its musical attributes."""
@@ -40,7 +47,9 @@ class Recommender:
         """Create a recommender for the supplied song catalog."""
         self.songs = songs
 
-    def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
+    def recommend(
+        self, user: UserProfile, k: int = 5, mode: str = "genre_first"
+    ) -> List[Song]:
         """Return the top k songs ranked by preference match."""
         if k < 0:
             raise ValueError("k must be non-negative")
@@ -56,12 +65,14 @@ class Recommender:
         }
         ranked_songs = sorted(
             self.songs,
-            key=lambda song: score_song(preferences, song.__dict__)[0],
+            key=lambda song: score_song(preferences, song.__dict__, mode)[0],
             reverse=True,
         )
         return ranked_songs[:k]
 
-    def explain_recommendation(self, user: UserProfile, song: Song) -> str:
+    def explain_recommendation(
+        self, user: UserProfile, song: Song, mode: str = "genre_first"
+    ) -> str:
         """Explain how a song matches the user's preferences."""
         preferences = {
             "genre": user.favorite_genre,
@@ -72,7 +83,7 @@ class Recommender:
             "preferred_mood_tags": user.preferred_mood_tags,
             "target_instrumentalness": user.target_instrumentalness,
         }
-        _, reasons = score_song(preferences, song.__dict__)
+        _, reasons = score_song(preferences, song.__dict__, mode)
         return ", ".join(reasons)
 
 def load_songs(csv_path: str) -> List[Dict]:
@@ -101,8 +112,16 @@ def load_songs(csv_path: str) -> List[Dict]:
 
     return songs
 
-def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
-    """Score one song against genre, mood, and target-energy preferences."""
+def score_song(
+    user_prefs: Dict, song: Dict, mode: str = "genre_first"
+) -> Tuple[float, List[str]]:
+    """Score one song with the selected genre, mood, and energy strategy."""
+    if mode not in SCORING_MODES:
+        raise ValueError(
+            f"Unknown scoring mode {mode!r}; choose from {', '.join(SCORING_MODES)}"
+        )
+
+    weights = SCORING_MODES[mode]
     favorite_genre = user_prefs["genre"] if "genre" in user_prefs else user_prefs["favorite_genre"]
     favorite_mood = user_prefs["mood"] if "mood" in user_prefs else user_prefs["favorite_mood"]
     target_energy = user_prefs["energy"] if "energy" in user_prefs else user_prefs["target_energy"]
@@ -111,14 +130,14 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     reasons = []
 
     if song["genre"] == favorite_genre:
-        score += 1.0
-        reasons.append("genre match (+1.0)")
+        score += weights["genre"]
+        reasons.append(f"genre match (+{weights['genre']:.1f})")
     if song["mood"] == favorite_mood:
-        score += 1.0
-        reasons.append("mood match (+1.0)")
+        score += weights["mood"]
+        reasons.append(f"mood match (+{weights['mood']:.1f})")
 
     energy_similarity = 1.0 - abs(float(song["energy"]) - float(target_energy))
-    energy_points = 2.0 * energy_similarity
+    energy_points = weights["energy"] * energy_similarity
     score += energy_points
     reasons.append(f"energy similarity (+{energy_points:.2f})")
 
@@ -145,13 +164,18 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 
     return score, reasons
 
-def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, List[str]]]:
-    """Return the top k songs with scores and human-readable reasons."""
+def recommend_songs(
+    user_prefs: Dict,
+    songs: List[Dict],
+    k: int = 5,
+    mode: str = "genre_first",
+) -> List[Tuple[Dict, float, List[str]]]:
+    """Return the top songs with scores using the selected scoring mode."""
     if k < 0:
         raise ValueError("k must be non-negative")
 
     scored_songs = [
-        (song, *score_song(user_prefs, song))
+        (song, *score_song(user_prefs, song, mode))
         for song in songs
     ]
     return sorted(scored_songs, key=lambda recommendation: recommendation[1], reverse=True)[:k]
