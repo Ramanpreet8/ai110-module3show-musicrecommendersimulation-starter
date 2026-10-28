@@ -10,8 +10,29 @@ You will implement the functions in recommender.py:
 """
 
 import argparse
+from textwrap import fill
 
 from .recommender import load_songs, recommend_songs
+from tabulate import tabulate
+
+
+def print_recommendation_table(
+    heading: str, recommendations: list, reasons_width: int = 52
+) -> None:
+    """Print recommendations as a grid table with wrapped reason text."""
+    rows = []
+    for rank, (song, score, reasons) in enumerate(recommendations, start=1):
+        reason_text = fill("; ".join(reasons), width=reasons_width)
+        rows.append([rank, song["title"], song["artist"], f"{score:.2f}", reason_text])
+
+    print(f"\n{heading}")
+    print(tabulate(
+        rows,
+        headers=["Rank", "Title", "Artist", "Score", "Reasons"],
+        tablefmt="grid",
+        colalign=("right", "left", "left", "right", "left"),
+        disable_numparse=True,
+    ))
 
 
 def main() -> None:
@@ -66,11 +87,7 @@ def main() -> None:
             recommendations = recommend_songs(user_prefs, songs, k=5, mode=mode)
 
             heading = f"{profile_name} - Mode: {mode}"
-            print(f"\n{heading}")
-            print("-" * len(heading))
-            for rank, (song, score, reasons) in enumerate(recommendations, start=1):
-                print(f"{rank}. {song['title']} - Score: {score:.2f}")
-                print(f"   Reasons: {', '.join(reasons)}")
+            print_recommendation_table(heading, recommendations)
 
     diversity_profile = {
         "genre": "ambient",
@@ -95,10 +112,10 @@ def main() -> None:
             mode=mode,
             diversity=diversity,
         )
-        print(f"\nDiversity {state}")
-        for rank, (song, score, reasons) in enumerate(recommendations, start=1):
-            print(f"{rank}. {song['title']} - Score: {score:.2f}")
-            print(f"   Reasons: {', '.join(reasons)}")
+        print_recommendation_table(
+            f"Diversity {state} - {profile_name} - Mode: {mode}",
+            recommendations,
+        )
 
 
 if __name__ == "__main__":

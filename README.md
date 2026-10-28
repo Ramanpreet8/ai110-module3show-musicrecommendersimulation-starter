@@ -66,61 +66,33 @@ You can add more tests in `tests/test_recommender.py`.
 Loaded songs: 18
 
 High-Energy Pop - Mode: genre_first
------------------------------------
-1. Sunrise City - Score: 7.13
-   Reasons: genre match (+3.0), mood match (+1.0), energy similarity (+0.87), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+1.00), instrumentalness close (+0.28)
-2. Gym Hero - Score: 5.23
-   Reasons: genre match (+3.0), energy similarity (+0.98), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
-3. Rooftop Lights - Score: 3.56
-   Reasons: mood match (+1.0), energy similarity (+0.81), popularity close (+0.46), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
-4. Neon Parade - Score: 2.57
-   Reasons: energy similarity (+0.86), popularity close (+0.43), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
-5. Iron Horizon - Score: 2.18
-   Reasons: energy similarity (+0.99), popularity close (+0.42), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
-
-High-Energy Pop - Mode: mood_first
-----------------------------------
-1. Sunrise City - Score: 7.13
-   Reasons: genre match (+1.0), mood match (+3.0), energy similarity (+0.87), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+1.00), instrumentalness close (+0.28)
-2. Rooftop Lights - Score: 5.56
-   Reasons: mood match (+3.0), energy similarity (+0.81), popularity close (+0.46), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
-3. Gym Hero - Score: 3.23
-   Reasons: genre match (+1.0), energy similarity (+0.98), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
-4. Neon Parade - Score: 2.57
-   Reasons: energy similarity (+0.86), popularity close (+0.43), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
-5. Iron Horizon - Score: 2.18
-   Reasons: energy similarity (+0.99), popularity close (+0.42), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
-
-High-Energy Pop - Mode: energy_focused
---------------------------------------
-1. Sunrise City - Score: 5.87
-   Reasons: genre match (+0.5), mood match (+0.5), energy similarity (+2.61), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+1.00), instrumentalness close (+0.28)
-2. Gym Hero - Score: 4.70
-   Reasons: genre match (+0.5), energy similarity (+2.94), popularity close (+0.48), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
-3. Rooftop Lights - Score: 4.68
-   Reasons: mood match (+0.5), energy similarity (+2.43), popularity close (+0.46), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
-4. Neon Parade - Score: 4.29
-   Reasons: energy similarity (+2.58), popularity close (+0.43), release decade match (+0.50), mood tags overlap (+0.50), instrumentalness close (+0.28)
-5. Iron Horizon - Score: 4.16
-   Reasons: energy similarity (+2.97), popularity close (+0.42), release decade match (+0.50), mood tags overlap (+0.00), instrumentalness close (+0.27)
-
-Diversity comparison: Low-Energy Ambient Diversity Stress Test - Mode: genre_first
-==================================================================================
-
-Diversity OFF
-1. Spacewalk Thoughts - Score: 5.93
-2. Midnight Coding - Score: 2.81
-3. Library Rain - Score: 2.42
-4. Focus Flow - Score: 1.86
-5. Quiet Constellations - Score: 1.51
-
-Diversity ON
-1. Spacewalk Thoughts - Score: 5.93
-2. Midnight Coding - Score: 2.81
-3. Library Rain - Score: 1.92
-   Reasons: mood match (+1.0), energy similarity (+0.75), popularity close (+0.48), release decade match (+0.00), mood tags overlap (+0.00), instrumentalness close (+0.18), diversity penalty: genre already recommended (-0.5)
-4. Quiet Constellations - Score: 1.51
-5. Night Drive Loop - Score: 1.42
++--------+----------------+-------------------+---------+------------------------------------------------------+
+|   Rank | Title          | Artist            |   Score | Reasons                                              |
++========+================+===================+=========+======================================================+
+|      1 | Sunrise City   | Neon Echo         |    7.13 | genre match (+3.0); mood match (+1.0); energy        |
+|        |                |                   |         | similarity (+0.87); popularity close (+0.48);        |
+|        |                |                   |         | release decade match (+0.50); mood tags overlap      |
+|        |                |                   |         | (+1.00); instrumentalness close (+0.28)              |
++--------+----------------+-------------------+---------+------------------------------------------------------+
+|      2 | Gym Hero       | Max Pulse         |    4.73 | genre match (+3.0); energy similarity (+0.98);       |
+|        |                |                   |         | popularity close (+0.48); release decade match       |
+|        |                |                   |         | (+0.50); mood tags overlap (+0.00); instrumentalness |
+|        |                |                   |         | close (+0.27); diversity penalty: genre already      |
+|        |                |                   |         | recommended (-0.5)                                   |
++--------+----------------+-------------------+---------+------------------------------------------------------+
+|      3 | Rooftop Lights | Indigo Parade     |    3.56 | mood match (+1.0); energy similarity (+0.81);        |
+|        |                |                   |         | popularity close (+0.46); release decade match       |
+|        |                |                   |         | (+0.50); mood tags overlap (+0.50); instrumentalness |
+|        |                |                   |         | close (+0.28)                                        |
++--------+----------------+-------------------+---------+------------------------------------------------------+
+|      4 | Neon Parade    | The Brass Circuit |    2.57 | energy similarity (+0.86); popularity close (+0.43); |
+|        |                |                   |         | release decade match (+0.50); mood tags overlap      |
+|        |                |                   |         | (+0.50); instrumentalness close (+0.28)              |
++--------+----------------+-------------------+---------+------------------------------------------------------+
+|      5 | Iron Horizon   | Black Anvil       |    2.18 | energy similarity (+0.99); popularity close (+0.42); |
+|        |                |                   |         | release decade match (+0.50); mood tags overlap      |
+|        |                |                   |         | (+0.00); instrumentalness close (+0.27)              |
++--------+----------------+-------------------+---------+------------------------------------------------------+
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 

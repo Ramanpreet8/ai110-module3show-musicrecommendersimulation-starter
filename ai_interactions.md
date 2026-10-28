@@ -149,3 +149,21 @@ For the Low-Energy Ambient Diversity Stress Test, diversity OFF returned Midnigh
 **How does the pattern appear in your final code?**
 
 <!-- Point to the relevant class or method -->
+
+---
+
+## Challenge 4: Visual Summary Table
+
+### Prompts used
+
+> Suggest a way to display my top recommendations as a formatted table in the terminal using the tabulate library or simple ASCII formatting. The table must include columns for Rank, Title, Artist, Score, and Reasons (the reasons for each score). Compare tabulate vs. plain ASCII and recommend one.
+>
+> Implement your recommendation in `main.py`. Use tabulate (add it to requirements.txt) with the "grid" format. Wrap the Reasons column so long text doesn't break the table. Print one table per user profile with the mode name in the header.
+
+### What the AI generated
+
+The AI recommended `tabulate` over hand-built ASCII because it formats columns and grid borders consistently with less custom code; plain ASCII would avoid a dependency but require maintaining column widths and borders manually. It added `tabulate` to the requirements, formats recommendations as grid tables with Rank, Title, Artist, Score, and Reasons columns, and wraps the reasons text to fit the terminal display. The CLI prints a separate table for each profile and active mode.
+
+### Manual Verification Notes
+
+Installed requirements in a temporary virtual environment and ran `python3 -m src.main`. The output contained 17 grid tables: one for each of five profiles across three modes, plus the diversity ON/OFF comparison. Checked that every table includes the five requested columns and that long Reasons values wrap within their cells. The README sample is copied from the actual High-Energy Pop / genre-first output. No implementation issues were found.
